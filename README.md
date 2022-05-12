@@ -65,10 +65,11 @@
       import { getFirestore } from 'firebase/firestore';
       ```
    2. Zkopíruj do něj všechen kód z otevřené stránky prohlížeče  `import { initializeApp } from "firebase/app"`...
-   3. Exportuj konstantu pro přístup k databázi `export const db = getFirestore(app);`
+   3. Exportuj konstantu pro přístup k databázi `export const db = getFirestore(app)`
 
 2. Hardcodované položky nahraď za položky z db.
    1. Naimportuj do komponenty soubor `db.js`.
+   1. Naimportuj do komponenty potřebné funkce z firebase `import { collection, onSnapshot  } from 'firebase/firestore'`.
    2. Přidej `useEffect`, který se vykoná jen při prvním renderu.
 
       ```js
@@ -78,7 +79,7 @@
    3. V efektu zavolej `onSnapshot` metody, která se spustí při každé změně v kolekci `seznam`.
 
       ```js
-      onSnapshot(collection(db, "seznam"), (querySnapshot) => {})
+      onSnapshot(collection(db, 'seznam'), (querySnapshot) => {})
       ```
 
    4. Při přijetí změn (`onSnapshot`) aktualizuj stav `polozky`.
@@ -88,3 +89,58 @@
       ```
 
    5. Nastav počáteční stav na prázdné pole. Smaž hardcodované objekty.
+
+1. Zkus ve Firebase konzoli přidat do seznamu novou položku. Měla by se ihned objevit i na tvé stránce.
+
+1. `useEffect` by si po sobě měl i uklidit pro případ, že se komponenta odpojí ze stránky.
+
+   1. `db.collection('seznam').onSnapshot` vrací funkci pro vypnutí poslouchání změn. Pokud ji v `useEffect` vrátíme, React ji ve správný čas spustí a vypne tím posluchač. Přidej před zmíněný kód `return`.
+
+1. Vytvoř formulář na přidávání položek.
+
+   1. Přidej stav pro textové políčko `const [nazev, setNazev] = useState('')`.
+   2. Přidej funkci, která se postará o uložení dat a resetování formuláře. Nezepomen pridat import funkce `addDoc` z Firebase.
+      ```js
+      const addData = () => {
+         addDoc(collection(db, 'seznam'),{ nazev })
+         setNazev('')
+      }
+      ```
+   3. Přidej textový vstup a tlačítko pro přidání.
+      ```html
+         <label>
+            Název:{' '}
+            <input
+               value={nazev}
+               onChange={(event) => setNazev(event.target.value)}
+            />
+         </label>
+         <button onClick={addData}>Přidat</button>
+      ```
+2. Seřaď položky podle názvu.
+
+   1. Vytvoř dotaz (query) kterým budeš hledat v databazi
+
+      ```js
+      const dotaz = query(collection(db, 'seznam'), orderBy("nazev"))
+      ```
+
+   2. Nezapomeň na import `query, orderBy` z firebase.
+   3. Uprav funkci na stažení seznamu tak, aby použila náš dotaz.
+
+      ```js
+      return onSnapshot(dotaz, (querySnapshot) => {
+        setPolozky(querySnapshot.docs.map((dokument) => dokument.data()))
+      })
+      ```
+
+   4. Přidejte limit na počet položek - upravte dotaz. Nezapomeňte přidat import `limit` z firebase.
+
+      ```js
+      const dotaz = query(collection(db, 'seznam'), orderBy("nazev"), limit(5))
+      ```
+   5. Skryjte "První položka" úpravou dotazu - přidáním podmínky. Nezapomeňte přidat import `where` z firebase.
+
+      ```js
+      const dotaz = query(collection(db, 'seznam'), where("nazev", "!=", "První položka"), orderBy("nazev"), limit(5))
+      ```
