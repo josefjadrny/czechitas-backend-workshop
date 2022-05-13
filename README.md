@@ -101,7 +101,7 @@
    1. Přidej stav pro textové políčko `const [nazev, setNazev] = useState('')`.
    2. Přidej funkci, která se postará o uložení dat a resetování formuláře. Nezepomen pridat import funkce `addDoc` z Firebase.
       ```js
-      const addData = () => {
+      const pridejPolozku = () => {
          addDoc(collection(db, 'seznam'),{ nazev })
          setNazev('')
       }
@@ -115,7 +115,7 @@
                onChange={(event) => setNazev(event.target.value)}
             />
          </label>
-         <button onClick={addData}>Přidat</button>
+         <button onClick={pridejPolozku}>Přidat</button>
       ```
 2. Seřaď položky podle názvu.
 
@@ -134,13 +134,37 @@
       })
       ```
 
-   4. Přidejte limit na počet položek - upravte dotaz. Nezapomeňte přidat import `limit` z firebase.
+3. Přidej možnost položky mazat.
 
+   1. Za název položky přidej tlačítko `<button>smazat</button>`.
+   2. Přidej ke každé položce ID, budeme ho potřebovat pro smazání položky
       ```js
-      const dotaz = query(collection(db, 'seznam'), orderBy("nazev"), limit(5))
+      setPolozky(querySnapshot.docs.map((dokument) => { 
+         return { ...dokument.data(), id: dokument.id }
+      }))
       ```
-   5. Skryjte "První položka" úpravou dotazu - přidáním podmínky. Nezapomeňte přidat import `where` z firebase.
+   3. Přidej funkci pro smazání položky podle id. Nezapomeň na import `deleteDoc, doc` z firebase.
 
       ```js
-      const dotaz = query(collection(db, 'seznam'), where("nazev", "!=", "První položka"), orderBy("nazev"), limit(5))
+      const smazPolozku = (polozka) => {
+         deleteDoc(doc(db, 'seznam', polozka.id))
+      }
+      ```
+   4. Zavolej funkci pro smazání položky při kliknutí na tlačítko (button) `onClick={() => smazPolozku(polozka)}`
+   
+1. Přidej uživateli možnost označovat položky jako koupené.
+   1. Při přidávání položky do seznamu jí nastav `koupeno: false`.
+   2. Přidej funkci pro editaci položky, která přepne hodnotu ;`koupeno`. Nezapomeň na import `updateDoc` z firebase.
+      ```js
+      const upravPolozku = (polozka) => {
+         updateDoc(doc(db, 'seznam', polozka.id), { koupeno: !polozka.koupeno })
+      }
+      ```
+   3. V mapě pro výpis položek přidej checkbox pro každou položku.
+      ```html
+      <input type="checkbox" checked={!!polozka.koupeno} onChange={() => upravPolozku(polozka)} />
+      ```
+4. Skryj již zakoupené položky úpravou dotazu - přidáním podmínky. Nezapomeň přidat import `where` z firebase.
+      ```js
+      const dotaz = query(collection(db, 'seznam'), where('koupeno', '!=', true))
       ```
