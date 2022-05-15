@@ -26,7 +26,6 @@ export function NakupniSeznam() {
   }
 
   const upravPolozku = (polozka) => {
-    console.log(polozka)
     updateDoc(doc(db, 'seznam', polozka.id), { koupeno: !polozka.koupeno })
   }
 
