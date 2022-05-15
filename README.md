@@ -62,7 +62,7 @@
 
    1. Naimportuj v něm Firestore
       ```js
-      import { getFirestore } from 'firebase/firestore';
+      import { getFirestore } from 'firebase/firestore'
       ```
    2. Zkopíruj do něj všechen kód z otevřené stránky prohlížeče  `import { initializeApp } from "firebase/app"`...
    3. Exportuj konstantu pro přístup k databázi `export const db = getFirestore(app)`
@@ -117,7 +117,7 @@
          </label>
          <button onClick={pridejPolozku}>Přidat</button>
       ```
-2. Seřaď položky podle názvu.
+1. Seřaď položky podle názvu.
 
    1. Vytvoř dotaz (query) kterým budeš hledat v databazi
 
@@ -134,7 +134,7 @@
       })
       ```
 
-3. Přidej možnost položky mazat.
+1. Přidej možnost položky mazat.
 
    1. Za název položky přidej tlačítko `<button>smazat</button>`.
    2. Přidej ke každé položce ID, budeme ho potřebovat pro smazání položky
@@ -154,7 +154,7 @@
    
 1. Přidej uživateli možnost označovat položky jako koupené.
    1. Při přidávání položky do seznamu jí nastav `koupeno: false`.
-   2. Přidej funkci pro editaci položky, která přepne hodnotu ;`koupeno`. Nezapomeň na import `updateDoc` z firebase.
+   2. Přidej funkci pro editaci položky, která přepne hodnotu `koupeno`. Nezapomeň na import `updateDoc` z firebase.
       ```js
       const upravPolozku = (polozka) => {
          updateDoc(doc(db, 'seznam', polozka.id), { koupeno: !polozka.koupeno })
@@ -164,7 +164,7 @@
       ```html
       <input type="checkbox" checked={!!polozka.koupeno} onChange={() => upravPolozku(polozka)} />
       ```
-4. Skryj již zakoupené položky úpravou dotazu - přidáním podmínky. Nezapomeň přidat import `where` z firebase.
+1. Skryj již zakoupené položky úpravou dotazu - přidáním podmínky. Nezapomeň přidat import `where` z firebase.
       ```js
       const dotaz = query(collection(db, 'seznam'), where('koupeno', '!=', true))
       ```
