@@ -9,8 +9,15 @@
 
 1. Přichystej komponentu `NakupniSeznam` v `./src/components/NakupniSeznam.jsx`.
 
-   1. Vlož ji do stránky.
-   2. Přidej komponentě stav s polem objektů.
+   1. Vlož ji do stránky `index.jsx`. Nezapomeň ji také importovat. 
+      ```js
+      const App = () => (
+         <div className="container">
+            <NakupniSeznam/>
+         </div>
+      );
+      ```
+   3. Přidej komponentě stav s polem objektů.
 
       ```js
       const [polozky, setPolozky] = useState([
