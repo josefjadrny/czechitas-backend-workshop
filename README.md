@@ -168,3 +168,60 @@
       ```js
       const dotaz = query(collection(db, 'seznam'), where('koupeno', '!=', true))
       ```
+
+
+
+## Bonus Fetch a promise
+Zobraz data z Google API Books a přidat je do své stránky.
+
+1. Přichystej komponentu `SeznamKnizek` v `./src/components/SeznamKnizek.jsx`.
+
+   1. Vlož ji do stránky.
+   2. Přidej komponentě stav s polem objektů.
+
+      ```js
+      const [knizky, setKnizky] = useState([])
+      ```
+
+   3. Přidej komponentě stav s klicovym slovem pro vyhledavani 
+
+      ```js
+      const [klicovyVyraz, setKlicovyVyraz] = useState('');
+      ```
+   4. Přidej textový vstup a tlačítko pro přidání.
+      ```jsx
+      <div>
+        <label>
+          Název knizky:{" "} 
+          <input 
+          value={klicovyVyraz} 
+          onChange={(event) => setKlicovyVyraz(event.target.value)} />
+        </label>
+        <button onClick="{hledejKnizku}">Hledat</button>
+      </div>
+      ```
+2. Přidej funkci `hledejKnizku`, která se postará o zobrazenií dat z Google API Books. 
+      ```js
+      const hledejKnizku = () => {
+      const dotaz = `https://www.googleapis.com/books/v1/volumes?q=intitle:${klicovyVyraz}`; // adresa dotazu + klicovy vyraz, ktery uzivatel zada do vyhledavani
+
+      fetch(dotaz) 
+      // fetch vraci Promise, proto pro nasledujici praci s daty musime na nem zavolat metodu .then() 
+         .then((response) => response.json()) // prevedem telo odpovedi na json 
+         .then((data) => { // response.json() vraci promise, proto musime zase pouzit metodu .then()
+            setKnizky(data.items); // zde uz ulozime data o knizkach do vyse vytvoreneho stavu 
+         })
+         .catch((err) => {
+            console.log(err); // pripadne errory odchytime v konzoli
+         });
+      };
+      ```
+3. Vypiš položky do odrážkového seznamu.
+
+      ```
+      <ul>
+        {knizky?.map((volume, index) => (
+          <li key={index}> {volume.volumeInfo.title} </li>
+        ))}
+      </ul>
+      ```
