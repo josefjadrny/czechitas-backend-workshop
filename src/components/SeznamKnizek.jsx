@@ -20,7 +20,7 @@ export function SeznamKnizek() {
   return (
     <div>
       <label>
-        Název knizky:{" "}
+        Název knížky:{" "}
         <input
           value={klicovyVyraz}
           onChange={(event) => setKlicovyVyraz(event.target.value)}

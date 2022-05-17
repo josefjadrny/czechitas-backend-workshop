@@ -171,8 +171,8 @@
 
 
 
-## Bonus Fetch a promise
-Zobraz data z Google API Books a přidat je do své stránky.
+## Bonus: Fetch a Promise
+Zobraz data z Google API Books a přidej je do své stránky.
 
 1. Přichystej komponentu `SeznamKnizek` v `./src/components/SeznamKnizek.jsx`.
 
@@ -183,16 +183,16 @@ Zobraz data z Google API Books a přidat je do své stránky.
       const [knizky, setKnizky] = useState([])
       ```
 
-   3. Přidej komponentě stav s klicovym slovem pro vyhledavani 
+   3. Přidej komponentě stav s klíčovým slovem pro vyhledávání
 
       ```js
       const [klicovyVyraz, setKlicovyVyraz] = useState('');
       ```
-   4. Přidej textový vstup a tlačítko pro přidání.
+   4. Přidej textový vstup a tlačítko pro hledání.
       ```jsx
       <div>
         <label>
-          Název knizky:{" "} 
+          Název knížky:{" "} 
           <input 
           value={klicovyVyraz} 
           onChange={(event) => setKlicovyVyraz(event.target.value)} />
@@ -200,19 +200,19 @@ Zobraz data z Google API Books a přidat je do své stránky.
         <button onClick="{hledejKnizku}">Hledat</button>
       </div>
       ```
-2. Přidej funkci `hledejKnizku`, která se postará o zobrazenií dat z Google API Books. 
+2. Přidej funkci `hledejKnizku`, která se postará o zobrazení dat z Google API Books. 
       ```js
       const hledejKnizku = () => {
-      const dotaz = `https://www.googleapis.com/books/v1/volumes?q=intitle:${klicovyVyraz}`; // adresa dotazu + klicovy vyraz, ktery uzivatel zada do vyhledavani
+      const dotaz = `https://www.googleapis.com/books/v1/volumes?q=intitle:${klicovyVyraz}`; // adresa dotazu + klíčový výraz, který uživatel zadá do vyhledávání
 
       fetch(dotaz) 
-      // fetch vraci Promise, proto pro nasledujici praci s daty musime na nem zavolat metodu .then() 
-         .then((response) => response.json()) // prevedem telo odpovedi na json 
-         .then((data) => { // response.json() vraci promise, proto musime zase pouzit metodu .then()
-            setKnizky(data.items); // zde uz ulozime data o knizkach do vyse vytvoreneho stavu 
+      /* fetch vrací Promise, na který je třeba počkat. K tomu slouží metoda .then(), která se spustí až ve chvíli, kdy jsou data dostupná. */
+         .then((response) => response.json()) // převedeme tělo odpovědi
+         .then((data) => { // response.json() vrací promise, proto musíme zase použít metodu .then()
+            setKnizky(data.items); // zde už uložíme data o knížkách do výše vytvořeného stavu 
          })
          .catch((err) => {
-            console.log(err); // pripadne errory odchytime v konzoli
+            console.log(err); // případné errory odchytíme v konzoli
          });
       };
       ```
