@@ -175,3 +175,60 @@
       ```js
       const dotaz = query(collection(db, 'seznam'), where('koupeno', '!=', true))
       ```
+
+
+
+## Bonus: Fetch a Promise
+Zobraz data z Google API Books a přidej je do své stránky.
+
+1. Přichystej komponentu `SeznamKnizek` v `./src/components/SeznamKnizek.jsx`.
+
+   1. Vlož ji do stránky.
+   2. Přidej komponentě stav s polem objektů.
+
+      ```js
+      const [knizky, setKnizky] = useState([])
+      ```
+
+   3. Přidej komponentě stav s klíčovým slovem pro vyhledávání
+
+      ```js
+      const [klicovyVyraz, setKlicovyVyraz] = useState('');
+      ```
+   4. Přidej textový vstup a tlačítko pro hledání.
+      ```jsx
+      <div>
+        <label>
+          Název knížky:{" "} 
+          <input 
+          value={klicovyVyraz} 
+          onChange={(event) => setKlicovyVyraz(event.target.value)} />
+        </label>
+        <button onClick="{hledejKnizku}">Hledat</button>
+      </div>
+      ```
+2. Přidej funkci `hledejKnizku`, která se postará o zobrazení dat z Google API Books. 
+      ```js
+      const hledejKnizku = () => {
+      const dotaz = `https://www.googleapis.com/books/v1/volumes?q=intitle:${klicovyVyraz}`; // adresa dotazu + klíčový výraz, který uživatel zadá do vyhledávání
+
+      fetch(dotaz) 
+      /* fetch vrací Promise, na který je třeba počkat. K tomu slouží metoda .then(), která se spustí až ve chvíli, kdy jsou data dostupná. */
+         .then((response) => response.json()) // převedeme tělo odpovědi
+         .then((data) => { // response.json() vrací promise, proto musíme zase použít metodu .then()
+            setKnizky(data.items); // zde už uložíme data o knížkách do výše vytvořeného stavu 
+         })
+         .catch((err) => {
+            console.log(err); // případné errory odchytíme v konzoli
+         });
+      };
+      ```
+3. Vypiš položky do odrážkového seznamu.
+
+      ```
+      <ul>
+        {knizky?.map((volume, index) => (
+          <li key={index}> {volume.volumeInfo.title} </li>
+        ))}
+      </ul>
+      ```
